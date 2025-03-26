@@ -5,12 +5,16 @@ import {
     validateCaptcha,
 } from "react-simple-captcha";
 import { AuthContext } from "../../providers/AuthProvider";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const Login = () => {
     const [disabled, setDisabled] = useState(true);
     const { signIn } = useContext(AuthContext);
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const from = location.state?.from?.pathname || "/";
 
     useEffect(() => {
         loadCaptchaEnginge(6);
@@ -29,20 +33,21 @@ const Login = () => {
             Swal.fire({
                 title: "Login Successful",
                 showClass: {
-                  popup: `
+                    popup: `
                     animate__animated
                     animate__fadeInUp
                     animate__faster
-                  `
+                  `,
                 },
                 hideClass: {
-                  popup: `
+                    popup: `
                     animate__animated
                     animate__fadeOutDown
                     animate__faster
-                  `
-                }
-              });
+                  `,
+                },
+            });
+            navigate(from, { replace: true });
         });
     };
     const handleValidateCaptcha = (e) => {
@@ -93,15 +98,11 @@ const Login = () => {
                             <input
                                 type="text"
                                 onBlur={handleValidateCaptcha}
-                                
                                 name="captcha"
                                 className="input"
                                 placeholder="type the text above"
                             />
-                            <button
-                                className="btn btn-outline btn-info btn-xs"
-                                
-                            >
+                            <button className="btn btn-outline btn-info btn-xs">
                                 Validate
                             </button>
 
@@ -113,7 +114,12 @@ const Login = () => {
                             />
                         </fieldset>
                     </form>
-                    <p><small>New Here? <Link to='/signUp'>Create an account</Link></small></p>
+                    <p>
+                        <small>
+                            New Here?{" "}
+                            <Link to="/signUp">Create an account</Link>
+                        </small>
+                    </p>
                 </div>
             </div>
         </div>
