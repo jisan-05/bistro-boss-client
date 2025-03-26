@@ -2,42 +2,43 @@ import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../providers/AuthProvider";
 import Swal from "sweetalert2";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const SignUp = () => {
-    const {createUser} = useContext(AuthContext)
+
+    const { createUser, updateUserProfile } = useContext(AuthContext);
+    const navigate = useNavigate()
 
     const {
         register,
         handleSubmit,
-
+        reset,
         formState: { errors },
     } = useForm();
 
     const onSubmit = (data) => {
         console.log(data);
-        createUser(data.email,data.password)
-        .then(result =>{
+        createUser(data.email, data.password)
+        .then((result) => {
             const loggedUser = result.user;
-            console.log(loggedUser)
-            Swal.fire({
-                title: "Sign Up Successful",
-                showClass: {
-                  popup: `
-                    animate__animated
-                    animate__fadeInUp
-                    animate__faster
-                  `
-                },
-                hideClass: {
-                  popup: `
-                    animate__animated
-                    animate__fadeOutDown
-                    animate__faster
-                  `
-                }
-              });
-        })
+            console.log(loggedUser);
+            updateUserProfile(data.name,data.photoURL)
+            .then(()=>{
+                console.log("User profile info update")
+                reset()
+                Swal.fire({
+                    title: "User profile update !",
+                    text: "You clicked the button!",
+                    icon: "success"
+                  });
+                  navigate('/')
+            })
+            .catch(error => console.log(error))
+
+          
+            
+            
+        });
     };
 
     // console.log(watch("example"))
@@ -70,6 +71,19 @@ const SignUp = () => {
                             {errors.name && (
                                 <span className="text-red-500">
                                     Name is required
+                                </span>
+                            )}
+                            <label className="fieldset-label">Photo Url</label>
+                            <input
+                                type="text"
+                                name="photoURL"
+                                {...register("photoURL", { required: true })}
+                                className="input"
+                                placeholder="Enter PhotoURL"
+                            />
+                            {errors.photoURL && (
+                                <span className="text-red-500">
+                                    PhotoURL is required
                                 </span>
                             )}
                             <label className="fieldset-label">Email</label>
@@ -113,17 +127,29 @@ const SignUp = () => {
                                 </p>
                             )}
                             {errors.password?.type === "pattern" && (
-                                <p className="text-red-500">Password must be 1 uppercase 1 lowercase and 1 digit and 1 special characters</p>
+                                <p className="text-red-500">
+                                    Password must be 1 uppercase 1 lowercase and
+                                    1 digit and 1 special characters
+                                </p>
                             )}
                             <div>
                                 <a className="link link-hover">
                                     Forgot password?
                                 </a>
                             </div>
-                            <input className="btn btn-neutral mt-4" type="submit" value="Sign Up" />
+                            <input
+                                className="btn btn-neutral mt-4"
+                                type="submit"
+                                value="Sign Up"
+                            />
                         </fieldset>
                     </form>
-                    <p><small>Already have an account <Link to="/login">Please Login</Link></small></p>
+                    <p>
+                        <small>
+                            Already have an account{" "}
+                            <Link to="/login">Please Login</Link>
+                        </small>
+                    </p>
                 </div>
             </div>
         </div>
