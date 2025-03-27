@@ -1,15 +1,16 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../../providers/AuthProvider";
+import { IoCartOutline } from "react-icons/io5";
 
 const NavBar = () => {
-    const { user,logOut } = useContext(AuthContext);
+    const { user, logOut } = useContext(AuthContext);
 
-    const handleLogOut = () =>{
+    const handleLogOut = () => {
         logOut()
-        .then(()=>{})
-        .catch(error => console.log(error))
-    }
+            .then(() => {})
+            .catch((error) => console.log(error));
+    };
 
     const navOptions = (
         <>
@@ -25,11 +26,26 @@ const NavBar = () => {
             <li>
                 <Link to="/secret">Secret</Link>
             </li>
+            <li>
+                <Link to="/">
+                    <button className="btn">
+                    <IoCartOutline className="m-2"/>
+                        <div className="badge badge-sm badge-secondary">
+                            +0
+                        </div>
+                    </button>
+                </Link>
+            </li>
 
             {user ? (
                 <>
-                    <span>{user?.displayName}</span>
-                    <button onClick={handleLogOut} className="btn bg-red-700 border-none text-white">Log Out</button>
+                    {/* <span>{user?.displayName}</span> */}
+                    <button
+                        onClick={handleLogOut}
+                        className="btn bg-red-700 border-none text-white"
+                    >
+                        Log Out
+                    </button>
                 </>
             ) : (
                 <>
