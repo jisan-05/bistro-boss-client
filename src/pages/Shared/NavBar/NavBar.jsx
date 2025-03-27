@@ -29,7 +29,7 @@ const NavBar = () => {
                 <Link to="/secret">Secret</Link>
             </li>
             <li>
-                <Link to="/">
+                <Link to="/dashboard/cart">
                     <button className="btn">
                     <IoCartOutline className="m-2"/>
                         <div className="badge badge-sm badge-secondary">
