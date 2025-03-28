@@ -3,11 +3,12 @@ import { useForm } from "react-hook-form";
 import { AuthContext } from "../../providers/AuthProvider";
 import Swal from "sweetalert2";
 import { Link, useNavigate } from "react-router-dom";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 
 const SignUp = () => {
-
+    const axiosPublic = useAxiosPublic();
     const { createUser, updateUserProfile } = useContext(AuthContext);
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const {
         register,
@@ -18,26 +19,30 @@ const SignUp = () => {
 
     const onSubmit = (data) => {
         console.log(data);
-        createUser(data.email, data.password)
-        .then((result) => {
+        createUser(data.email, data.password).then((result) => {
             const loggedUser = result.user;
             console.log(loggedUser);
-            updateUserProfile(data.name,data.photoURL)
-            .then(()=>{
-                console.log("User profile info update")
-                reset()
-                Swal.fire({
-                    title: "User profile update !",
-                    text: "You clicked the button!",
-                    icon: "success"
-                  });
-                  navigate('/')
-            })
-            .catch(error => console.log(error))
-
-          
-            
-            
+            updateUserProfile(data.name, data.photoURL)
+                .then(() => {
+                    // create user entry in the database
+                    const userInfo = {
+                        name: data.name,
+                        email: data.email,
+                    };
+                    axiosPublic.post("/users", userInfo).then((res) => {
+                        if (res.data.insertedId) {
+                            console.log("User Added In DataBase");
+                            reset();
+                            Swal.fire({
+                                title: "User profile update !",
+                                text: "You clicked the button!",
+                                icon: "success",
+                            });
+                            navigate("/");
+                        }
+                    });
+                })
+                .catch((error) => console.log(error));
         });
     };
 
