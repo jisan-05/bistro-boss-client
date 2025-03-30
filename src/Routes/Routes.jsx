@@ -12,6 +12,8 @@ import Cart from "../pages/Dashboard/Cart/Cart";
 import AllUsers from "../pages/Dashboard/AllUsers/AllUsers";
 import AddItems from "../pages/Dashboard/AddItems/AddItems";
 import AdminRoute from "./AdminRoute";
+import ManageItems from "../pages/Dashboard/ManageItems/ManageItems";
+import UpdateItem from "../pages/Dashboard/UpdateItem/UpdateItem";
 
 const router = createBrowserRouter([
     {
@@ -49,27 +51,56 @@ const router = createBrowserRouter([
         ],
     },
     {
-        path:'dashboard',
-        element:<PrivetRoute><Dashboard></Dashboard></PrivetRoute>,
-        children:[
+        path: "dashboard",
+        element: (
+            <PrivetRoute>
+                <Dashboard></Dashboard>
+            </PrivetRoute>
+        ),
+        children: [
             // normal user routes
             {
-                path:'cart',
-                element:<Cart></Cart>
+                path: "cart",
+                element: <Cart></Cart>,
             },
 
             // admin router
             {
-                path:'addItems',
-                element:<AdminRoute><AddItems></AddItems></AdminRoute>
+                path: "addItems",
+                element: (
+                    <AdminRoute>
+                        <AddItems></AddItems>
+                    </AdminRoute>
+                ),
             },
             {
-                path:'users',
-                element:<AdminRoute><AllUsers></AllUsers></AdminRoute>
-            }
-
-        ]
-    }
+                path: "manageItems",
+                element: (
+                    <AdminRoute>
+                        <ManageItems></ManageItems>
+                    </AdminRoute>
+                ),
+            },
+            {
+                path: "updateItem/:id",
+                element: (
+                    <AdminRoute>
+                        <UpdateItem></UpdateItem>
+                    </AdminRoute>
+                ),
+                loader: ({ params }) =>
+                    fetch(`http://localhost:5000/menu/${params.id}`),
+            },
+            {
+                path: "users",
+                element: (
+                    <AdminRoute>
+                        <AllUsers></AllUsers>
+                    </AdminRoute>
+                ),
+            },
+        ],
+    },
 ]);
 
 export default router;
